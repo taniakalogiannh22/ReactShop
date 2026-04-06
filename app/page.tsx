@@ -1,65 +1,157 @@
-import Image from "next/image";
+"use client";
+
+import { useMemo, useState } from "react";
+import ProductCard from "./components/ProductCard";
 
 export default function Home() {
+  const products = [
+    { name: "Phone 14", price: 999 },
+    { name: "McBook Pro", price: 1999 },
+    { name: "ΕPods Pro", price: 249 },
+    { name: "Watch", price: 399 },
+    { name: "Pad Air", price: 599 },
+    { name: "Gaming Mouse", price: 59 },
+    { name: "Phone 13", price: 999 },
+    { name: "Phone 11", price: 999 },
+    { name: "Phone 15", price: 999 },
+  ];
+
+  const [search, setSearch] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [sort, setSort] = useState("default");
+  const [showFilters, setShowFilters] = useState(false);
+
+  const filteredProducts = useMemo(() => {
+    let result = [...products];
+
+    if (search) {
+      result = result.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    if (minPrice) {
+      result = result.filter((p) => p.price >= Number(minPrice));
+    }
+
+    if (maxPrice) {
+      result = result.filter((p) => p.price <= Number(maxPrice));
+    }
+
+    if (sort === "price-asc") {
+      result.sort((a, b) => a.price - b.price);
+    }
+
+    if (sort === "price-desc") {
+      result.sort((a, b) => b.price - a.price);
+    }
+
+    if (sort === "name-asc") {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return result;
+  }, [search, minPrice, maxPrice, sort]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-black px-6 py-10 relative overflow-hidden">
+
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-blue-900 opacity-60" />
+
+      <div className="relative max-w-6xl mx-auto space-y-12">
+
+        {/* HERO */}
+        <div className="text-center bg-black/60 backdrop-blur-xl border border-white/10 p-10 rounded-3xl shadow-[0_0_40px_rgba(168,85,247,0.2)]">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            ReactShop 🛍️
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="text-gray-400 max-w-xl mx-auto">
+            Discover premium products with a modern shopping experience.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* TITLE + BUTTON */}
+        <div className="flex justify-between items-center">
+          <h3 className="text-2xl font-semibold text-white">
+            Products
+          </h3>
+
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            {showFilters ? "Hide Filters" : "Show Filters"}
+          </button>
         </div>
-      </main>
+
+        {/* FILTERS */}
+        {showFilters && (
+          <div className="bg-black/70 backdrop-blur-xl border border-white/10 p-6 rounded-2xl shadow-lg grid md:grid-cols-4 gap-4">
+
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full p-3 bg-transparent border border-gray-700 rounded-xl text-white"
+            />
+
+            <input
+              type="number"
+              placeholder="Min price"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              className="w-full p-3 bg-transparent border border-gray-700 rounded-xl text-white"
+            />
+
+            <input
+              type="number"
+              placeholder="Max price"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="w-full p-3 bg-transparent border border-gray-700 rounded-xl text-white"
+            />
+
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="w-full p-3 bg-black border border-gray-700 rounded-xl text-white"
+            >
+              <option value="default">Sort By</option>
+              <option value="price-asc">Price: Low → High</option>
+              <option value="price-desc">Price: High → Low</option>
+              <option value="name-asc">Name: A → Z</option>
+            </select>
+
+          </div>
+        )}
+
+        {/* RESULTS */}
+        <div className="flex justify-between items-center text-white">
+          <span className="text-gray-400 text-sm">
+            {filteredProducts.length} results
+          </span>
+        </div>
+
+        {/* PRODUCTS */}
+        {filteredProducts.length === 0 ? (
+          <p className="text-gray-400">No products found.</p>
+        ) : (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {filteredProducts.map((product, index) => (
+              <ProductCard
+                key={index}
+                name={product.name}
+                price={product.price}
+              />
+            ))}
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }
