@@ -4,12 +4,12 @@ import Link from "next/link";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useRouter } from "next/navigation";
-
+import { useWishlist } from "../context/WishlistContext";
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { cart } = useCart();
   const router = useRouter();
-
+ const { wishlist } = useWishlist();
   return (
     <nav className="bg-black/70 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -24,6 +24,18 @@ export default function Navbar() {
 
           <Link href="/" className="hover:text-purple-400 transition">
             Home
+          </Link>
+
+
+          {/* Wishlist */}
+          <Link href="/wishlist" className="relative hover:text-purple-400">
+            ❤️ Wishlist
+
+            {wishlist.length > 0 && (
+              <span className="absolute -top-2 -right-3 bg-pink-500 text-white text-xs px-2 py-0.5 rounded-full">
+                {wishlist.length}
+              </span>
+            )}
           </Link>
 
           {/* Cart */}
