@@ -2,17 +2,11 @@
 
 import ProductCard from "../components/ProductCard";
 
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-};
-
 export default function ProductsPage() {
-  const products: Product[] = [
-    { id: 1, name: "iPhone 14", price: 999 },
-    { id: 2, name: "MacBook Pro", price: 1999 },
-    { id: 3, name: "AirPods Pro", price: 249 },
+  const products = [
+    { name: "iPhone 14", price: 999 },
+    { name: "MacBook Pro", price: 1999 },
+    { name: "AirPods Pro", price: 249 },
   ];
 
   return (
@@ -22,10 +16,9 @@ export default function ProductsPage() {
       </h1>
 
       <div className="grid md:grid-cols-3 gap-6">
-        {products.map((product) => (
+        {products.map((product, index) => (
           <ProductCard
-            key={product.id}
-            id={product.id}
+            key={index}
             name={product.name}
             price={product.price}
           />
